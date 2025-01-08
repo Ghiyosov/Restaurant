@@ -12,6 +12,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuServices>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddDbContext<Context>(opt => 
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 ;
