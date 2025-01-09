@@ -11,7 +11,7 @@ public interface IAnalyticsQuery
     public Task<Responce<List<FindPeakHoursForOrders>>> Task14FindPeakHoursForOrders();
     public Task<Responce<List<GetAvgPriceOrderForAddress>>> Task15GetAvgPriceOrderForAddress();
     public Task<Responce<List<GetAverageDeliveryTimeInRegion>>> Task16GetAverageDeliveryTimeInRegion();
-    public Task<Responce<List<string>>> Task17GetUsersTopMenusCategory();
+    public Task<Responce<List<GetUsersTopMenusCategory>>> Task17GetUsersTopMenusCategory();
     public Task<Responce<List<UpdateUserDTO>>> Task18GetUsersDoMore10Orders();
     public Task<Responce<List<GetCourierDeliveryTimeAndRating>>> Task19GetCourierDeliveryTimeAndRating();
     public Task<Responce<List<GetCourierEarnings>>> Task20GetCourierEarnings();

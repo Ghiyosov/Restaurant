@@ -13,4 +13,5 @@ public class OrderDetail
     public string SpecialInstructions { get; set; }
     
     public Order Order { get; set; }
+    public Menu Menu { get; set; }
 }

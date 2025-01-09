@@ -1,6 +1,8 @@
 
+using Domain.Entities;
 using Infrastructure.Data;
 using Infrastructure.Interfaces;
+using Infrastructure.Profiles;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,9 +15,12 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuServices>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICourierService, CourierService>();
+builder.Services.AddScoped<IOrderDetailService, OrderDetailService>();
 builder.Services.AddDbContext<Context>(opt => 
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-;
+builder.Services.AddAutoMapper(typeof(InfrastructureProfile));
 
 var app = builder.Build();
 

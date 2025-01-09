@@ -22,6 +22,6 @@ public record UpdateUserDTO : UserDTO
 
 public record ReadUserDTO : UpdateUserDTO
 {
-    public List<UpdateUserDTO> Couriers { get; set; }
+    public List<UpdateCourierDTO> Couriers { get; set; }
     public List<UpdateOrderDTO> Orders { get; set; }
 }

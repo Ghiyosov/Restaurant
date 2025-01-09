@@ -26,8 +26,3 @@ public record ReadRestaurantDTO : UpdateRestaurantDTO
     public List<UpdateOrderDTO> Orders { get; set; }
 }
 
-public record GetTop10RestaurantsForOrderCountInThisMonth
-{
-    public UpdateRestaurantDTO Type { get; set; }
-    public int OrderCount { get; set; }
-}

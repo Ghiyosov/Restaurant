@@ -23,6 +23,7 @@ public record UpdateMenuDTO : MenuDTO
 public record ReadMenuDTO : UpdateMenuDTO
 {
     public UpdateRestaurantDTO Restaurant { get; set; }
+    public List<UpdateOrderDetailDTO> OrderDetails { get; set; }
 }
 
 public record GetMenusCategoryWithAveregPrice
