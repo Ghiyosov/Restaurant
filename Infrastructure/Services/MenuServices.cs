@@ -1,4 +1,5 @@
 using System.Net;
+using AutoMapper;
 using Domain.DTOs;
 using Domain.Entities;
 using Infrastructure.ApiResponses;
@@ -8,90 +9,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Services;
 
-public class MenuServices(Context _context) : IMenuService
+public class MenuServices(Context _context, IMapper _mapper) : IMenuService
 {
     public async Task<Responce<List<ReadMenuDTO>>> GetMenus()
     {
-        var x = _context.Menus
-            .Include(m=>m.Restaurant).AsQueryable();
-        var menus = await x.Select(x => new ReadMenuDTO()
-        {
-            Id = x.Id,
-            RestaurantId = x.Restaurant.Id,
-            Name = x.Name,
-            Description = x.Description,
-            Price = x.Price,
-            Category = x.Category,
-            IsAvailable = x.IsAvailable,
-            PreparationTime = x.PreparationTime,
-            Weight = x.Weight,
-            PhotoUrl = x.PhotoUrl,
-            Restaurant = new UpdateRestaurantDTO()
-            {
-                Id = x.Restaurant.Id,
-                Name = x.Restaurant.Name,
-                Address = x.Restaurant.Address,
-                Rating = x.Restaurant.Rating,
-                WorkingHours = x.Restaurant.WorkingHours,
-                Description = x.Restaurant.Description,
-                ContactPhone = x.Restaurant.ContactPhone,
-                IsActive = x.Restaurant.IsActive,
-                MinOrderAmount = x.Restaurant.MinOrderAmount,
-                DeliveryPrice = x.Restaurant.DeliveryPrice
-            }
-        }).ToListAsync();
+        var x = await _context.Menus
+            .Include(m=>m.Restaurant)
+            .Include(x=>x.OrderDetails).ToListAsync();
+        var menus =  _mapper.Map<List<ReadMenuDTO>>(x);
         return new Responce<List<ReadMenuDTO>>(menus);
     }
 
     public async Task<Responce<ReadMenuDTO>> GetMenuById(int id)
     {
         var x = await _context.Menus
-            .Include(m=>m.Restaurant).FirstOrDefaultAsync(m=>m.Id==id);
+            .Include(m=>m.Restaurant)
+            .Include(x=>x.OrderDetails).FirstOrDefaultAsync(m=>m.Id==id);
         if (x == null)
             return new Responce<ReadMenuDTO>(HttpStatusCode.NotFound, "Menu Not Found");
-        var menu = new ReadMenuDTO()
-        {
-            Id = x.Id,
-            RestaurantId = x.Restaurant.Id,
-            Name = x.Name,
-            Description = x.Description,
-            Price = x.Price,
-            Category = x.Category,
-            IsAvailable = x.IsAvailable,
-            PreparationTime = x.PreparationTime,
-            Weight = x.Weight,
-            PhotoUrl = x.PhotoUrl,
-            Restaurant = new UpdateRestaurantDTO()
-            {
-                Id = x.Restaurant.Id,
-                Name = x.Restaurant.Name,
-                Address = x.Restaurant.Address,
-                Rating = x.Restaurant.Rating,
-                WorkingHours = x.Restaurant.WorkingHours,
-                Description = x.Restaurant.Description,
-                ContactPhone = x.Restaurant.ContactPhone,
-                IsActive = x.Restaurant.IsActive,
-                MinOrderAmount = x.Restaurant.MinOrderAmount,
-                DeliveryPrice = x.Restaurant.DeliveryPrice
-            }
-        };
+        var menu = _mapper.Map<ReadMenuDTO>(x);
         return new Responce<ReadMenuDTO>(menu);
     }
 
     public async Task<Responce<string>> CreateMenu(CreateMenuDTO menu)
     {
-        var m = new Menu()
-        {
-            RestaurantId = menu.RestaurantId,
-            Name = menu.Name,
-            Description = menu.Description,
-            Price = menu.Price,
-            Category = menu.Category,
-            IsAvailable = menu.IsAvailable,
-            PreparationTime = menu.PreparationTime,
-            Weight = menu.Weight,
-            PhotoUrl = menu.PhotoUrl
-        };
+        var m = _mapper.Map<Menu>(menu);
         await _context.Menus.AddAsync(m);
         var result = await _context.SaveChangesAsync();
         return result == 0 
@@ -102,18 +44,11 @@ public class MenuServices(Context _context) : IMenuService
     public async Task<Responce<string>> UpdateMenu(UpdateMenuDTO menu)
     {
         var x = await _context.Menus
-            .Include(m=>m.Restaurant).FirstOrDefaultAsync(m=>m.Id==menu.Id);
+            .Include(m=>m.Restaurant)
+            .Include(x=>x.OrderDetails).FirstOrDefaultAsync(m=>m.Id==menu.Id);
         if (x == null)
             return new Responce<string>(HttpStatusCode.NotFound, "Menu Not Found");
-        x.RestaurantId = menu.RestaurantId;
-        x.Name = menu.Name;
-        x.Description = menu.Description;
-        x.Price = menu.Price;
-        x.Category = menu.Category;
-        x.IsAvailable = menu.IsAvailable;
-        x.PreparationTime = menu.PreparationTime;
-        x.Weight = menu.Weight;
-        x.PhotoUrl = menu.PhotoUrl;
+        _mapper.Map(menu, x);
         var result = await _context.SaveChangesAsync();
         return result == 0 
             ? new Responce<string>(HttpStatusCode.InternalServerError, "Internal Server Error")
@@ -123,7 +58,8 @@ public class MenuServices(Context _context) : IMenuService
     public async Task<Responce<string>> DeleteMenu(int id)
     {
         var x = await _context.Menus
-            .Include(m=>m.Restaurant).FirstOrDefaultAsync(m=>m.Id==id);
+            .Include(m=>m.Restaurant)
+            .Include(x=>x.OrderDetails).FirstOrDefaultAsync(m=>m.Id==id);
         if (x == null)
             return new Responce<string>(HttpStatusCode.NotFound, "Menu Not Found");
         _context.Menus.Remove(x);
@@ -138,32 +74,7 @@ public class MenuServices(Context _context) : IMenuService
         var x = _context.Menus
             .Include(m=>m.Restaurant)
             .Where(m=>m.Price<1000).AsQueryable();
-        var menus = await x.Select(x => new ReadMenuDTO()
-        {
-            Id = x.Id,
-            RestaurantId = x.Restaurant.Id,
-            Name = x.Name,
-            Description = x.Description,
-            Price = x.Price,
-            Category = x.Category,
-            IsAvailable = x.IsAvailable,
-            PreparationTime = x.PreparationTime,
-            Weight = x.Weight,
-            PhotoUrl = x.PhotoUrl,
-            Restaurant = new UpdateRestaurantDTO()
-            {
-                Id = x.Restaurant.Id,
-                Name = x.Restaurant.Name,
-                Address = x.Restaurant.Address,
-                Rating = x.Restaurant.Rating,
-                WorkingHours = x.Restaurant.WorkingHours,
-                Description = x.Restaurant.Description,
-                ContactPhone = x.Restaurant.ContactPhone,
-                IsActive = x.Restaurant.IsActive,
-                MinOrderAmount = x.Restaurant.MinOrderAmount,
-                DeliveryPrice = x.Restaurant.DeliveryPrice
-            }
-        }).ToListAsync();
+        var menus = _mapper.Map<List<ReadMenuDTO>>(x);
         return new Responce<List<ReadMenuDTO>>(menus);
     }
 
@@ -186,19 +97,7 @@ public class MenuServices(Context _context) : IMenuService
             .Select(x=> new GetCategoryHasMoreMenus()
             {
                 Category = x.Key,
-                Menus = x.Select(x=> new UpdateMenuDTO()
-                {
-                    Id = x.Id,
-                    RestaurantId = x.Restaurant.Id,
-                    Name = x.Name,
-                    Description = x.Description,
-                    Price = x.Price,
-                    Category = x.Category,
-                    IsAvailable = x.IsAvailable,
-                    PreparationTime = x.PreparationTime,
-                    Weight = x.Weight,
-                    PhotoUrl = x.PhotoUrl,
-                }).ToList()
+                Menus = _mapper.Map<List<UpdateMenuDTO>>(x.ToList())
             }).OrderByDescending(x=>x.Menus.Count).FirstAsync();
         return new Responce<GetCategoryHasMoreMenus>(res);
     }

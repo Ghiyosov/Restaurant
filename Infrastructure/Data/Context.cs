@@ -25,6 +25,11 @@ public class Context(DbContextOptions<Context> options):DbContext(options)
             .WithOne(o => o.Restaurant)
             .HasForeignKey(o => o.RestaurantId)
             .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Menu>()
+            .HasMany(m=>m.OrderDetails)
+            .WithOne(o => o.Menu)
+            .HasForeignKey(o=>o.MenuItemId)
+            .OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<Order>()
             .HasMany(m=>m.OrderDetails)
             .WithOne(o => o.Order)

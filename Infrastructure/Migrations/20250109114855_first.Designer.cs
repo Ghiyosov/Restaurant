@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20250108081620_first")]
+    [Migration("20250109114855_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -181,6 +181,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MenuItemId");
+
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderDetails");
@@ -323,11 +325,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.OrderDetail", b =>
                 {
+                    b.HasOne("Domain.Entities.Menu", "Menu")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Menu");
 
                     b.Navigation("Order");
                 });
@@ -335,6 +345,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Courier", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Menu", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>

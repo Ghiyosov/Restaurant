@@ -15,5 +15,5 @@ public interface IOrderService
     public Task<Responce<List<GetUsersAndOrdersCount>>> Task5GetUsersAndOrdersCount();
     public Task<Responce<List<UpdateOrderDTO>>> Task6GetOrdersByCourierId(int courierId);
     public Task<Responce<decimal>> Task7GetSumOrdersPriceInThisDay();
-    public Task<Responce<List<UpdateOrderDTO>>> Task8GetOrdersWhereOrderPriceSumMoreOrderPriceAvg();
+    public Task<Responce<List<UpdateOrderDTO>>> Task7GetOrdersWhereOrderPriceSumMoreOrderPriceAvg();
 }

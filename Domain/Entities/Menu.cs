@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
 
@@ -19,4 +20,6 @@ public class Menu
     public string PhotoUrl { get; set; }
 
     public Restaurant Restaurant { get; set; }
+    [ForeignKey("MenuItemId")] 
+    public List<OrderDetail> OrderDetails { get; set; }
 }

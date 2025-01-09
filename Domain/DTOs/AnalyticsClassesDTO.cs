@@ -2,11 +2,21 @@ namespace Domain.DTOs;
 
 public record AnalyticsClassesDTO;
 
+public record GetTop10RestaurantsForOrderCountInThisMonth
+{
+    public UpdateRestaurantDTO Restaurant { get; set; }
+    public int OrderCount { get; set; }
+}
+
+public record OrderCountInDay
+{
+    public string DayOfWeek { get; set; }
+    public int OrderCount { get; set; }
+}
 public record GetRevenueOfRestaurantInWeek
 {
     public UpdateRestaurantDTO Restaurant { get; set; }
-    public DayOfWeek DayOfWeek { get; set; }
-    public int OrderCount { get; set; }
+    public List<OrderCountInDay> OrderCountInDay { get; set; }
 }
 
 public record GetRestaurantWhithTop3Menus
@@ -30,7 +40,7 @@ public record GetAvgPriceOrderForAddress
 public record GetAverageDeliveryTimeInRegion
 {
     public string Region { get; set; }
-    public TimeSpan Delivery { get; set; }
+    public double Delivery { get; set; }
 }
 
 public record GetUsersTopMenusCategory
@@ -51,3 +61,4 @@ public record GetCourierEarnings
     public UpdateCourierDTO Courier { get; set; }
     public decimal Earnings { get; set; }
 }
+

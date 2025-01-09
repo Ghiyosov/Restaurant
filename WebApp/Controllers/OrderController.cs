@@ -44,7 +44,7 @@ public class OrderController(IOrderService _service)
     public async Task<Responce<decimal>> Task7GetSumOrdersPriceInThisDay()
         => await _service.Task7GetSumOrdersPriceInThisDay();
     
-    [HttpGet("Task8GetOrdersWhereOrderPriceSumMoreOrderPriceAvg")]
-    public async Task<Responce<List<UpdateOrderDTO>>> Task8GetOrdersWhereOrderPriceSumMoreOrderPriceAvg()
-        => await _service.Task8GetOrdersWhereOrderPriceSumMoreOrderPriceAvg();
+    [HttpGet("Task7GetOrdersWhereOrderPriceSumMoreOrderPriceAvg")]
+    public async Task<Responce<List<UpdateOrderDTO>>> Task7GetOrdersWhereOrderPriceSumMoreOrderPriceAvg()
+        => await _service.Task7GetOrdersWhereOrderPriceSumMoreOrderPriceAvg();
 }

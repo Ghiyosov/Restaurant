@@ -19,4 +19,5 @@ public record UpdateOrderDetailDTO : OrderDetailDTO
 public record ReadOrderDetailDTO : UpdateOrderDetailDTO
 {
     public UpdateOrderDTO Order { get; set; }
+    public UpdateMenuDTO Menu { get; set; }
 }

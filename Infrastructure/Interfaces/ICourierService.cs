@@ -10,5 +10,5 @@ public interface ICourierService
     public Task<Responce<string>> CreateCourier(CreateCourierDTO createCourierDTO);
     public Task<Responce<string>> UpdateCourier(UpdateCourierDTO updateCourierDTO);
     public Task<Responce<string>> DeleteCourier(int id);
-    public Task<Responce<List<ReadCourierDTO>>> Task7GetTop5Couriers();
+    public Task<Responce<List<ReadCourierDTO>>> Task8GetTop5Couriers();
 }

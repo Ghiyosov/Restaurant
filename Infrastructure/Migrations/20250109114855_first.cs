@@ -159,6 +159,12 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_OrderDetails", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_OrderDetails_Menus_MenuItemId",
+                        column: x => x.MenuItemId,
+                        principalTable: "Menus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_OrderDetails_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
@@ -175,6 +181,11 @@ namespace Infrastructure.Migrations
                 name: "IX_Menus_RestaurantId",
                 table: "Menus",
                 column: "RestaurantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetails_MenuItemId",
+                table: "OrderDetails",
+                column: "MenuItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
@@ -201,10 +212,10 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Menus");
+                name: "OrderDetails");
 
             migrationBuilder.DropTable(
-                name: "OrderDetails");
+                name: "Menus");
 
             migrationBuilder.DropTable(
                 name: "Orders");
