@@ -121,17 +121,19 @@ public class AnalyticsQueryService(Context _context, IMapper _mapper): IAnalytic
 
     public async Task<Responce<List<GetUsersTopMenusCategory>>> Task17GetUsersTopMenusCategory()
     {
-        var users = _context.Users.Include(x => x.Orders)
-            .ThenInclude(x=>x.OrderDetails)
-            .ThenInclude(x=>x.Menu).AsQueryable();
-        var res = users.Select(x=>new GetUsersTopMenusCategory()
-        {
-            User = _mapper.Map<UpdateUserDTO>(x),
-            Category = x.Orders.Select(x=> 
-                x.OrderDetails
-                    .Select(x=>x.Menu).GroupBy(x=>x.Category)
-                    .OrderByDescending(x=>x.Key.Length))
-        })
+        // var users = _context.Users.Include(x => x.Orders)
+        //     .ThenInclude(x=>x.OrderDetails)
+        //     .ThenInclude(x=>x.Menu).AsQueryable();
+        // var res = users.Select(x=>new GetUsersTopMenusCategory()
+        // {
+        //     User = _mapper.Map<UpdateUserDTO>(x),
+        //     Category = x.Orders.Select(x=> 
+        //         x.OrderDetails
+        //             .Select(x=>x.Menu).GroupBy(x=>x.Category)
+        //             .OrderByDescending(x=>x.Key.Length))
+        // })
+        throw new NotImplementedException();
+
     }
 
     public async Task<Responce<List<UpdateUserDTO>>> Task18GetUsersDoMore10Orders()
