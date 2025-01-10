@@ -121,33 +121,71 @@ public class AnalyticsQueryService(Context _context, IMapper _mapper): IAnalytic
 
     public async Task<Responce<List<GetUsersTopMenusCategory>>> Task17GetUsersTopMenusCategory()
     {
-        // var users = _context.Users.Include(x => x.Orders)
-        //     .ThenInclude(x=>x.OrderDetails)
-        //     .ThenInclude(x=>x.Menu).AsQueryable();
-        // var res = users.Select(x=>new GetUsersTopMenusCategory()
-        // {
-        //     User = _mapper.Map<UpdateUserDTO>(x),
-        //     Category = x.Orders.Select(x=> 
-        //         x.OrderDetails
-        //             .Select(x=>x.Menu).GroupBy(x=>x.Category)
-        //             .OrderByDescending(x=>x.Key.Length))
-        // })
-        throw new NotImplementedException();
-
+        var favoriteCategory = _context.Orders
+            .Join(_context.OrderDetails, o => o.Id, od => od.OrderId, (o, od)
+                => new
+                {
+                    o.UserId,
+                    od.MenuItemId
+                }).Join(_context.Menus, od => od.MenuItemId, m => m.Id,
+                (od, m) => new
+                {
+                    od.UserId,
+                    m.Category
+                })
+            .GroupBy(x => new { x.UserId, x.Category })
+            .Select(g =>
+                new
+                {
+                    UserId = g.Key.UserId,
+                    Category = g.Key.Category,
+                    TotalOrders = g.Count()
+                })
+            .GroupBy(x => x.UserId)
+            .Select(g => new
+            {
+                UserId = g.Key,
+                FavoriteCategory = g.OrderByDescending(c => c.TotalOrders)
+                    .FirstOrDefault().Category
+            }).AsQueryable();
+        var res = await favoriteCategory
+            .Select(x=>new GetUsersTopMenusCategory()
+            {
+                User = _mapper.Map<UpdateUserDTO>( _context.Users.FirstOrDefault(g=>g.Id == x.UserId)),
+                Category = x.FavoriteCategory
+            }).OrderByDescending(x=>x.Category).ToListAsync();
+        return new Responce<List<GetUsersTopMenusCategory>>(res);
     }
 
     public async Task<Responce<List<UpdateUserDTO>>> Task18GetUsersDoMore10Orders()
     {
-        throw new NotImplementedException();
+        var users =  _context.Users.Include(x => x.Orders).AsQueryable();
+        var res = await users
+            .Where(user => user.Orders.GroupBy(x => x.CreatedAt.Month)
+                .Any(order=>order.Count() > 5))
+            .Select(user => _mapper.Map<UpdateUserDTO>(user)).ToListAsync();
+        return new Responce<List<UpdateUserDTO>>(res);
     }
 
     public async Task<Responce<List<GetCourierDeliveryTimeAndRating>>> Task19GetCourierDeliveryTimeAndRating()
     {
-        throw new NotImplementedException();
+        var corier = _context.Couriers.Include(x=>x.Orders).AsQueryable();
+        var res = await corier.Select(x=>new GetCourierDeliveryTimeAndRating()
+        {
+            Courier = _mapper.Map<UpdateCourierDTO>(x),
+            AvgDeliveryTime = x.Orders.Select(x=>(x.DeliveredAt - x.CreatedAt).Minutes).Average(),
+        }).OrderBy(x=>x.AvgDeliveryTime).ToListAsync();
+        return new Responce<List<GetCourierDeliveryTimeAndRating>>(res);
     }
 
     public async Task<Responce<List<GetCourierEarnings>>> Task20GetCourierEarnings()
     {
-        throw new NotImplementedException();
+        var corier = _context.Couriers.Include(x=>x.Orders).AsQueryable();
+        var res = await corier.Select(x=>new GetCourierEarnings()
+        {
+            Courier = _mapper.Map<UpdateCourierDTO>(x),
+            Earnings = x.Orders.Sum(x=>x.TotalAmount)
+        }).OrderByDescending(x=>x.Earnings).ToListAsync();
+        return new Responce<List<GetCourierEarnings>>(res);
     }
 }

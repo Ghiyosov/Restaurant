@@ -52,8 +52,7 @@ public record GetUsersTopMenusCategory
 public record GetCourierDeliveryTimeAndRating
 {
     public UpdateCourierDTO Courier { get; set; }
-    public decimal Rating { get; set; }
-    public TimeSpan AvgDeliveryTime { get; set; }
+    public double AvgDeliveryTime { get; set; }
 }
 
 public record GetCourierEarnings

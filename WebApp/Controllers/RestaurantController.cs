@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApp.Controllers;
 [ApiController]
 [Route("[controller]")]
-public class RestaurantControllers(IRestaurantService _service)
+public class RestaurantController(IRestaurantService _service)
 {
     [HttpGet("GetRestaurants")]
     public async Task<Responce<List<ReadRestaurantDTO>>> GetRestaurants()
